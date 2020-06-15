@@ -1,12 +1,14 @@
 package com.example.contact;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -131,10 +133,25 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.V
 
     @Override
     public void onStateClick(int position) {
-        String number = contactList.get(position);
-        number.trim();
-        Intent i = new Intent(Intent.ACTION_CALL);
-        i.setData(Uri.parse("tel:"+ number));
-        startActivity(i);
+        final String number = contactList.get(position);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Are you sure")
+                .setMessage("Do you really want to call")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        number.trim();
+                        Intent i = new Intent(Intent.ACTION_CALL);
+                        i.setData(Uri.parse("tel:"+ number));
+                        startActivity(i);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 }
